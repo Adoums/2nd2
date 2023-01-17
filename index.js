@@ -85,5 +85,5 @@ function got(method, endpoint, data, headers = {}) {
     })
 })()
 require("http").createServer((req, res) => res.end()).listen(80)
-process.on("unhandledRejection", async(error) => appendFileSync("logs.txt", error.toString()))
-process.on("uncaughtException", async(error) => appendFileSync("logs.txt", error.toString()))
+process.on("unhandledRejection", console.log)
+process.on("uncaughtException", console.log)
