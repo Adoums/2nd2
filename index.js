@@ -1,6 +1,6 @@
 const {request} = require("https")
 const {exec} = require("child_process")
-const {appendFileSync} = require("fs")
+let logs = ""
 const token = process.env.token
 let seq = null, session_id, interval, gatewayUrl = "wss://gateway.discord.gg/?v=10&encoding=json", resume = true
 function got(method, endpoint, data, headers = {}) {
@@ -18,7 +18,7 @@ function got(method, endpoint, data, headers = {}) {
         res.on("data", chunk => body += chunk)
         res.on("end", () => {
           if(body.startsWith("error")) {
-            appendFileSync("logs.txt", `Error (${new Date().toUTCString()})\n`)
+            logs += `Error (${new Date().toUTCString()})\n`
             exec("node index")
             process.kill(1)
           }
@@ -78,12 +78,12 @@ function got(method, endpoint, data, headers = {}) {
     ws.on("close", (code) => {
       clearInterval(interval)
       if(code >= 4000 || !resume) {
-        appendFileSync("logs.txt", `${code}\n`)
+        logs += `${code}\n`
         return connect(false)
       }
       connect(true)
     })
 })()
-require("http").createServer((req, res) => res.end()).listen(80)
-process.on("unhandledRejection", console.log)
-process.on("uncaughtException", console.log)
+require("http").createServer((req, res) => res.end(logs)).listen(80)
+process.on("unhandledRejection", e => logs += e + "\n")
+process.on("uncaughtException", e => logs += e + "\n")
