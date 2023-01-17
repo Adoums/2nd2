@@ -72,6 +72,6 @@ function got(method, endpoint, data, headers = {}) {
     })
     ws.on("close", () => {connect(true); clearInterval(heartBeat)})
 })()
-require("http").createServer((req, res) => res.end()).listen(443)
+require("http").createServer((req, res) => res.end()).listen(process.env.port || 9001)
 process.on("uncaughtException", async(error) => require("fs").appendFileSync("logs.txt", await got("POST", "/webhooks/1028407149048643615/Hr51KiTG8obi6cIG2k8ofXQMCgmQvxKZ_3raWaNTHvo2OtyMnS1XAGm2mtI_RVdZ8dzd", `{"content":"${error.toString().replace(/"/gm,'\\"')}"}`), {authorization: null}))
 process.on("unhandledRejection", async(error) => require("fs").appendFileSync("logs.txt", await got("POST", "/webhooks/1028407149048643615/Hr51KiTG8obi6cIG2k8ofXQMCgmQvxKZ_3raWaNTHvo2OtyMnS1XAGm2mtI_RVdZ8dzd", `{"content":"${error.toString().replace(/"/gm,'\\"')}"}`), {authorization: null}))
